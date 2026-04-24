@@ -2,36 +2,26 @@ name: AutomatedMaven
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up JDK 24
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '24'
+      - name: Set up JDK 24
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '24'
 
-    - name: Compile Java source files
-      run: |
-        mkdir -p out
-        javac -d out $(find . -name "*.java")
+      - name: Build and run tests with Maven
+        run: mvn clean test
 
-    - name: Run Java application
-      run: |
-        java -cp out com.mycompany.automatedmaven.AutomatedMaven
-        
-    - name: list all contents
-      run: ls
-    - name: compile classes
-      working-directory: ./src
-      run: javac -cp "..testresourser.junit-platform-console-standalone-1.9.3.jar" .com/mycompany/automatedmaven/AutomatedMaven.java "..com/mycompany/automatedmaven/NextStepTest.java"
+      - name: Package project
+        run: mvn package
